@@ -1,0 +1,91 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Cleaned and standardized customer data from the Bronze layer"
+    columns:
+      - name: customer_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_products
+    description: "Cleaned and standardized product data from the Bronze layer"
+    columns:
+      - name: product_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: unit_price
+        data_tests:
+          - not_null
+
+  - name: stg_orders
+    description: "Cleaned and standardized order data from the Bronze layer"
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+
+  - name: stg_order_items
+    description: "Cleaned order line-item data from the Bronze layer"
+    columns:
+      - name: order_item_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+  - name: stg_payments
+    description: "Cleaned and standardized payment data from the Bronze layer"
+
+    columns:
+      - name: payment_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: payment_amount
+        data_tests:
+          - not_null
+  - name: stg_sellers
+    description: "Cleaned and standardized seller data from the Bronze layer"
+
+    columns:
+      - name: seller_id
+        data_tests:
+          - not_null
+          - unique
